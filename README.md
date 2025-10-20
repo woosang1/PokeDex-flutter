@@ -91,6 +91,11 @@ lib/
     └── pokemon_widgets.dart    # 포켓몬 전용 위젯들
 ```
 
+## 📱 스크린샷
+<img src="screenshots/1.png" width="350" alt="사진1">  
+<img src="screenshots/2.png" width="350" alt="사진1">  
+---
+
 ## 🔧 주요 패키지
 
 - `http: ^1.2.2` - HTTP 요청 처리
