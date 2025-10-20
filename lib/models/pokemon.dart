@@ -27,7 +27,9 @@ class Pokemon {
   factory Pokemon.fromJson(Map<String, dynamic> json) => _$PokemonFromJson(json);
   Map<String, dynamic> toJson() => _$PokemonToJson(this);
 
-  String get imageUrl => sprites.other.officialArtwork.frontDefault;
+  String get imageUrl => sprites.other?.officialArtwork?.frontDefault ?? 
+                        sprites.frontDefault ?? 
+                        'https://via.placeholder.com/200x200?text=No+Image';
   String get primaryType => types.isNotEmpty ? types.first.type.name : 'unknown';
 }
 
@@ -61,14 +63,14 @@ class PokemonTypeDetail {
 
 @JsonSerializable()
 class PokemonSprites {
-  final String frontDefault;
-  final String frontShiny;
-  final PokemonSpritesOther other;
+  final String? frontDefault;
+  final String? frontShiny;
+  final PokemonSpritesOther? other;
 
   PokemonSprites({
-    required this.frontDefault,
-    required this.frontShiny,
-    required this.other,
+    this.frontDefault,
+    this.frontShiny,
+    this.other,
   });
 
   factory PokemonSprites.fromJson(Map<String, dynamic> json) => _$PokemonSpritesFromJson(json);
@@ -78,10 +80,10 @@ class PokemonSprites {
 @JsonSerializable()
 class PokemonSpritesOther {
   @JsonKey(name: 'official-artwork')
-  final PokemonOfficialArtwork officialArtwork;
+  final PokemonOfficialArtwork? officialArtwork;
 
   PokemonSpritesOther({
-    required this.officialArtwork,
+    this.officialArtwork,
   });
 
   factory PokemonSpritesOther.fromJson(Map<String, dynamic> json) => _$PokemonSpritesOtherFromJson(json);
@@ -91,10 +93,10 @@ class PokemonSpritesOther {
 @JsonSerializable()
 class PokemonOfficialArtwork {
   @JsonKey(name: 'front_default')
-  final String frontDefault;
+  final String? frontDefault;
 
   PokemonOfficialArtwork({
-    required this.frontDefault,
+    this.frontDefault,
   });
 
   factory PokemonOfficialArtwork.fromJson(Map<String, dynamic> json) => _$PokemonOfficialArtworkFromJson(json);

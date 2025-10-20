@@ -1,11 +1,12 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import '../models/pokemon.dart';
+import '../utils/pokemon_utils.dart';
 
 class PokemonApiService {
-  static const String baseUrl = 'https://pokeapi.co/api/v2';
+  static const String baseUrl = PokemonConstants.pokemonApiBaseUrl;
   
-  static Future<PokemonListResponse> getPokemonList({int offset = 0, int limit = 20}) async {
+  static Future<PokemonListResponse> getPokemonList({int offset = 0, int limit = PokemonConstants.pokemonPerPage}) async {
     try {
       final response = await http.get(
         Uri.parse('$baseUrl/pokemon?offset=$offset&limit=$limit'),
@@ -56,7 +57,7 @@ class PokemonApiService {
     }
   }
   
-  static Future<List<Pokemon>> getPokemonListWithDetails({int offset = 0, int limit = 20}) async {
+  static Future<List<Pokemon>> getPokemonListWithDetails({int offset = 0, int limit = PokemonConstants.pokemonPerPage}) async {
     try {
       final listResponse = await getPokemonList(offset: offset, limit: limit);
       final pokemonList = <Pokemon>[];

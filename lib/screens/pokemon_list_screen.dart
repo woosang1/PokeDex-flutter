@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../models/pokemon.dart';
 import '../services/pokemon_api_service.dart';
+import '../utils/pokemon_utils.dart';
 import 'pokemon_detail_screen.dart';
 
 class PokemonListScreen extends StatefulWidget {
@@ -16,7 +17,7 @@ class _PokemonListScreenState extends State<PokemonListScreen> {
   bool _hasError = false;
   String _errorMessage = '';
   int _currentOffset = 0;
-  static const int _limit = 20;
+  static const int _limit = PokemonConstants.pokemonPerPage;
 
   @override
   void initState() {
@@ -68,48 +69,6 @@ class _PokemonListScreenState extends State<PokemonListScreen> {
     _loadPokemonList(loadMore: true);
   }
 
-  Color _getTypeColor(String type) {
-    switch (type.toLowerCase()) {
-      case 'fire':
-        return Colors.red;
-      case 'water':
-        return Colors.blue;
-      case 'grass':
-        return Colors.green;
-      case 'electric':
-        return Colors.yellow;
-      case 'psychic':
-        return Colors.purple;
-      case 'ice':
-        return Colors.cyan;
-      case 'dragon':
-        return Colors.indigo;
-      case 'dark':
-        return Colors.brown;
-      case 'fairy':
-        return Colors.pink;
-      case 'fighting':
-        return Colors.orange;
-      case 'flying':
-        return Colors.lightBlue;
-      case 'poison':
-        return Colors.deepPurple;
-      case 'ground':
-        return Colors.brown.shade300;
-      case 'rock':
-        return Colors.grey;
-      case 'bug':
-        return Colors.lightGreen;
-      case 'ghost':
-        return Colors.deepPurple.shade300;
-      case 'steel':
-        return Colors.grey.shade400;
-      case 'normal':
-        return Colors.grey.shade300;
-      default:
-        return Colors.grey;
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -122,7 +81,7 @@ class _PokemonListScreenState extends State<PokemonListScreen> {
             fontSize: 24,
           ),
         ),
-        backgroundColor: Colors.red.shade600,
+        backgroundColor: PokemonTypeColors.getTypeColor('fire'),
         foregroundColor: Colors.white,
         elevation: 0,
       ),
@@ -262,7 +221,7 @@ class _PokemonListScreenState extends State<PokemonListScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      '#${pokemon.id.toString().padLeft(3, '0')}',
+                      PokemonUtils.formatPokemonNumber(pokemon.id),
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
                         color: Colors.grey.shade600,
                         fontWeight: FontWeight.w500,
@@ -285,10 +244,10 @@ class _PokemonListScreenState extends State<PokemonListScreen> {
                             horizontal: 8,
                             vertical: 4,
                           ),
-                          decoration: BoxDecoration(
-                            color: _getTypeColor(type.type.name),
-                            borderRadius: BorderRadius.circular(12),
-                          ),
+                        decoration: BoxDecoration(
+                          color: PokemonTypeColors.getTypeColor(type.type.name),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
                           child: Text(
                             type.type.name.toUpperCase(),
                             style: const TextStyle(

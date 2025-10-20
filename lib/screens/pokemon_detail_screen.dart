@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../models/pokemon.dart';
+import '../utils/pokemon_utils.dart';
 
 class PokemonDetailScreen extends StatelessWidget {
   final Pokemon pokemon;
@@ -9,72 +10,11 @@ class PokemonDetailScreen extends StatelessWidget {
     required this.pokemon,
   });
 
-  Color _getTypeColor(String type) {
-    switch (type.toLowerCase()) {
-      case 'fire':
-        return Colors.red;
-      case 'water':
-        return Colors.blue;
-      case 'grass':
-        return Colors.green;
-      case 'electric':
-        return Colors.yellow;
-      case 'psychic':
-        return Colors.purple;
-      case 'ice':
-        return Colors.cyan;
-      case 'dragon':
-        return Colors.indigo;
-      case 'dark':
-        return Colors.brown;
-      case 'fairy':
-        return Colors.pink;
-      case 'fighting':
-        return Colors.orange;
-      case 'flying':
-        return Colors.lightBlue;
-      case 'poison':
-        return Colors.deepPurple;
-      case 'ground':
-        return Colors.brown.shade300;
-      case 'rock':
-        return Colors.grey;
-      case 'bug':
-        return Colors.lightGreen;
-      case 'ghost':
-        return Colors.deepPurple.shade300;
-      case 'steel':
-        return Colors.grey.shade400;
-      case 'normal':
-        return Colors.grey.shade300;
-      default:
-        return Colors.grey;
-    }
-  }
-
-  String _getStatName(String statName) {
-    switch (statName.toLowerCase()) {
-      case 'hp':
-        return 'HP';
-      case 'attack':
-        return '공격';
-      case 'defense':
-        return '방어';
-      case 'special-attack':
-        return '특수공격';
-      case 'special-defense':
-        return '특수방어';
-      case 'speed':
-        return '속도';
-      default:
-        return statName;
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: _getTypeColor(pokemon.primaryType).withOpacity(0.1),
+      backgroundColor: PokemonTypeColors.getTypeColorWithOpacity(pokemon.primaryType, 0.1),
       appBar: AppBar(
         title: Text(
           pokemon.name.toUpperCase(),
@@ -83,7 +23,7 @@ class PokemonDetailScreen extends StatelessWidget {
             fontSize: 20,
           ),
         ),
-        backgroundColor: _getTypeColor(pokemon.primaryType),
+        backgroundColor: PokemonTypeColors.getTypeColor(pokemon.primaryType),
         foregroundColor: Colors.white,
         elevation: 0,
       ),
@@ -99,7 +39,7 @@ class PokemonDetailScreen extends StatelessWidget {
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
                   colors: [
-                    _getTypeColor(pokemon.primaryType).withOpacity(0.3),
+                    PokemonTypeColors.getTypeColorWithOpacity(pokemon.primaryType, 0.3),
                     Colors.white,
                   ],
                 ),
@@ -108,7 +48,7 @@ class PokemonDetailScreen extends StatelessWidget {
                 children: [
                   // Pokemon Number
                   Text(
-                    '#${pokemon.id.toString().padLeft(3, '0')}',
+                    PokemonUtils.formatPokemonNumber(pokemon.id),
                     style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                       color: Colors.grey.shade600,
                       fontWeight: FontWeight.w500,
@@ -156,7 +96,7 @@ class PokemonDetailScreen extends StatelessWidget {
                           vertical: 8,
                         ),
                         decoration: BoxDecoration(
-                          color: _getTypeColor(type.type.name),
+                          color: PokemonTypeColors.getTypeColor(type.type.name),
                           borderRadius: BorderRadius.circular(20),
                         ),
                         child: Text(
@@ -192,8 +132,8 @@ class PokemonDetailScreen extends StatelessWidget {
                   _buildInfoSection(
                     '기본 정보',
                     [
-                      _buildInfoRow('키', '${pokemon.height / 10}m'),
-                      _buildInfoRow('무게', '${pokemon.weight / 10}kg'),
+                      _buildInfoRow('키', PokemonUtils.formatHeight(pokemon.height)),
+                      _buildInfoRow('무게', PokemonUtils.formatWeight(pokemon.weight)),
                     ],
                   ),
                   
@@ -204,7 +144,7 @@ class PokemonDetailScreen extends StatelessWidget {
                     '능력치',
                     pokemon.stats.map((stat) {
                       return _buildStatRow(
-                        _getStatName(stat.stat.name),
+                        PokemonUtils.formatStatName(stat.stat.name),
                         stat.baseStat,
                       );
                     }).toList(),
@@ -300,10 +240,10 @@ class PokemonDetailScreen extends StatelessWidget {
           ),
           const SizedBox(height: 4),
           LinearProgressIndicator(
-            value: value / 255, // Max stat value is 255
+            value: value / PokemonConstants.maxStatValue,
             backgroundColor: Colors.grey.shade200,
             valueColor: AlwaysStoppedAnimation<Color>(
-              _getTypeColor(pokemon.primaryType),
+              PokemonTypeColors.getTypeColor(pokemon.primaryType),
             ),
             minHeight: 6,
           ),

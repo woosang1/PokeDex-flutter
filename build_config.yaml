@@ -1,0 +1,28 @@
+# Build configuration for Pokemon Pokedex app
+
+# This file contains build configuration for the Flutter Pokemon Pokedex app.
+# It includes settings for different build environments and platforms.
+
+# Development build settings
+development:
+  debug: true
+  api_base_url: "https://pokeapi.co/api/v2"
+  pokemon_per_page: 20
+  enable_logging: true
+
+# Production build settings  
+production:
+  debug: false
+  api_base_url: "https://pokeapi.co/api/v2"
+  pokemon_per_page: 20
+  enable_logging: false
+
+# Platform specific settings
+android:
+  min_sdk_version: 21
+  target_sdk_version: 34
+  compile_sdk_version: 34
+  
+ios:
+  deployment_target: "12.0"
+  minimum_os_version: "12.0"

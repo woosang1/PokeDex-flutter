@@ -59,9 +59,11 @@ Map<String, dynamic> _$PokemonTypeDetailToJson(PokemonTypeDetail instance) =>
 
 PokemonSprites _$PokemonSpritesFromJson(Map<String, dynamic> json) =>
     PokemonSprites(
-      frontDefault: json['front_default'] as String,
-      frontShiny: json['front_shiny'] as String,
-      other: PokemonSpritesOther.fromJson(json['other'] as Map<String, dynamic>),
+      frontDefault: json['front_default'] as String?,
+      frontShiny: json['front_shiny'] as String?,
+      other: json['other'] == null
+          ? null
+          : PokemonSpritesOther.fromJson(json['other'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$PokemonSpritesToJson(PokemonSprites instance) =>
@@ -73,8 +75,10 @@ Map<String, dynamic> _$PokemonSpritesToJson(PokemonSprites instance) =>
 
 PokemonSpritesOther _$PokemonSpritesOtherFromJson(Map<String, dynamic> json) =>
     PokemonSpritesOther(
-      officialArtwork: PokemonOfficialArtwork.fromJson(
-          json['official-artwork'] as Map<String, dynamic>),
+      officialArtwork: json['official-artwork'] == null
+          ? null
+          : PokemonOfficialArtwork.fromJson(
+              json['official-artwork'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$PokemonSpritesOtherToJson(
@@ -86,7 +90,7 @@ Map<String, dynamic> _$PokemonSpritesOtherToJson(
 PokemonOfficialArtwork _$PokemonOfficialArtworkFromJson(
         Map<String, dynamic> json) =>
     PokemonOfficialArtwork(
-      frontDefault: json['front_default'] as String,
+      frontDefault: json['front_default'] as String?,
     );
 
 Map<String, dynamic> _$PokemonOfficialArtworkToJson(
