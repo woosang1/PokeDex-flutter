@@ -31,30 +31,50 @@ dependencies:
   flutter:
     sdk: flutter
 
-  # The following adds the Cupertino Icons font to your application.
-  # Use with the CupertinoIcons class for iOS style icons.
+  # Icons
   cupertino_icons: ^1.0.8
   
-  # HTTP requests for Pokemon API
-  http: ^1.2.2
+  # State Management - Riverpod (최신 상태 관리)
+  flutter_riverpod: ^2.6.1
+  riverpod_annotation: ^2.6.1
+  
+  # HTTP Client - Dio (고급 HTTP 클라이언트)
+  dio: ^5.7.0
   
   # JSON serialization
   json_annotation: ^4.9.0
+  
+  # Immutable Models - Freezed (불변 데이터 모델)
+  freezed_annotation: ^2.4.4
+  
+  # Routing - go_router (선언적 라우팅)
+  go_router: ^14.6.2
+  
+  # Functional Programming
+  dartz: ^0.10.1
+  
+  # Code Generation
+  retrofit: ^4.4.1
+  
+  # Logging
+  logger: ^2.5.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
 
-  # The "flutter_lints" package below contains a set of recommended lints to
-  # encourage good coding practices. The lint set provided by the package is
-  # activated in the `analysis_options.yaml` file located at the root of your
-  # package. See that file for information about deactivating specific lint
-  # rules and activating additional ones.
+  # Linting
   flutter_lints: ^5.0.0
   
-  # JSON serialization code generation
+  # Code Generation
   build_runner: ^2.4.13
   json_serializable: ^6.8.0
+  freezed: ^2.5.7
+  riverpod_generator: ^2.6.2
+  retrofit_generator: ^9.1.4
+  
+  # Testing
+  mockito: ^5.4.4
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

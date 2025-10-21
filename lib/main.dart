@@ -1,9 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'screens/pokemon_list_screen.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'core/router/app_router.dart';
 
 void main() {
-  runApp(const PokedexApp());
+  // Ensure Flutter bindings are initialized
+  WidgetsFlutterBinding.ensureInitialized();
+  
+  // Set system UI overlay style
+  SystemChrome.setSystemUIOverlayStyle(
+    const SystemUiOverlayStyle(
+      statusBarColor: Colors.transparent,
+      statusBarIconBrightness: Brightness.light,
+    ),
+  );
+
+  runApp(
+    // Wrap with ProviderScope for Riverpod
+    const ProviderScope(
+      child: PokedexApp(),
+    ),
+  );
 }
 
 class PokedexApp extends StatelessWidget {
@@ -11,9 +28,10 @@ class PokedexApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return MaterialApp.router(
       title: 'Pokédex',
       debugShowCheckedModeBanner: false,
+      routerConfig: AppRouter.router,
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
           seedColor: const Color(0xFF6C5CE7),
@@ -67,7 +85,6 @@ class PokedexApp extends StatelessWidget {
           ),
         ),
       ),
-      home: const PokemonListScreen(),
     );
   }
 }
