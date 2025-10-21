@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import '../models/pokemon.dart';
 import '../services/pokemon_api_service.dart';
 import '../utils/pokemon_utils.dart';
+import '../utils/pokemon_filters.dart';
 import '../widgets/animated_widgets.dart';
 import '../widgets/common_widgets.dart';
+import '../widgets/filter_widgets.dart';
 import 'pokemon_detail_screen.dart';
 
 class PokemonListScreen extends StatefulWidget {
@@ -15,16 +17,92 @@ class PokemonListScreen extends StatefulWidget {
 
 class _PokemonListScreenState extends State<PokemonListScreen> {
   List<Pokemon> _pokemonList = [];
+  List<Pokemon> _filteredPokemonList = [];
   bool _isLoading = false;
   bool _hasError = false;
   String _errorMessage = '';
   int _currentOffset = 0;
   static const int _limit = PokemonConstants.pokemonPerPage;
+  
+  // Filter state
+  PokemonFilterState _filterState = const PokemonFilterState();
+  int _totalPages = 1;
+  
+  // Scroll controller for infinite scroll
+  final ScrollController _scrollController = ScrollController();
+  bool _hasMore = true;
 
   @override
   void initState() {
     super.initState();
     _loadPokemonList();
+    _scrollController.addListener(_onScroll);
+  }
+  
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+  
+  void _onScroll() {
+    // Only auto-load more when no filters are active (infinite scroll mode)
+    if (!_filterState.hasActiveFilters && 
+        _scrollController.position.pixels >= _scrollController.position.maxScrollExtent * 0.8) {
+      // When scrolled to 80% of the list
+      if (!_isLoading && _hasMore) {
+        _loadMorePokemon();
+      }
+    }
+  }
+
+  void _applyFilters() {
+    _filteredPokemonList = _pokemonList.where((pokemon) {
+      // Generation filter
+      if (_filterState.selectedGeneration != null) {
+        final generation = _filterState.selectedGeneration!;
+        if (pokemon.id < generation.startId || pokemon.id > generation.endId) {
+          return false;
+        }
+      }
+      
+      // Type filter
+      if (_filterState.selectedTypes.isNotEmpty) {
+        final pokemonTypes = pokemon.types.map((t) => t.type.name).toList();
+        if (!_filterState.selectedTypes.any((type) => pokemonTypes.contains(type))) {
+          return false;
+        }
+      }
+      
+      return true;
+    }).toList();
+    
+    _calculateTotalPages();
+    setState(() {});
+  }
+
+  void _calculateTotalPages() {
+    _totalPages = (_filteredPokemonList.length / _filterState.itemsPerPage).ceil();
+    if (_totalPages == 0) _totalPages = 1;
+  }
+
+  List<Pokemon> _getCurrentPagePokemon() {
+    final startIndex = (_filterState.currentPage - 1) * _filterState.itemsPerPage;
+    final endIndex = startIndex + _filterState.itemsPerPage;
+    return _filteredPokemonList.skip(startIndex).take(_filterState.itemsPerPage).toList();
+  }
+
+  void _onFilterChanged(PokemonFilterState newFilter) {
+    setState(() {
+      _filterState = newFilter;
+    });
+    _applyFilters();
+  }
+
+  void _onPageChanged(int page) {
+    setState(() {
+      _filterState = _filterState.copyWith(currentPage: page);
+    });
   }
 
   Future<void> _loadPokemonList({bool loadMore = false}) async {
@@ -36,6 +114,7 @@ class _PokemonListScreenState extends State<PokemonListScreen> {
       if (!loadMore) {
         _currentOffset = 0;
         _pokemonList.clear();
+        _hasMore = true;
       }
     });
 
@@ -53,7 +132,15 @@ class _PokemonListScreenState extends State<PokemonListScreen> {
         }
         _currentOffset += _limit;
         _isLoading = false;
+        
+        // Check if there are more pokemon (assuming max is around 1000+)
+        if (pokemonList.length < _limit || _pokemonList.length >= 1000) {
+          _hasMore = false;
+        }
       });
+      
+      // Apply filters after loading
+      _applyFilters();
     } catch (e) {
       setState(() {
         _hasError = true;
@@ -94,6 +181,9 @@ class _PokemonListScreenState extends State<PokemonListScreen> {
               // Custom App Bar
               _buildCustomAppBar(),
               
+              // Filter Button
+              _buildFilterButton(),
+              
               // Content
               Expanded(
                 child: Container(
@@ -104,14 +194,53 @@ class _PokemonListScreenState extends State<PokemonListScreen> {
                       topRight: Radius.circular(30),
                     ),
                   ),
-                  child: _hasError
-                      ? _buildErrorWidget()
-                      : RefreshIndicator(
-                          onRefresh: _refreshPokemonList,
-                          child: _pokemonList.isEmpty && _isLoading
-                              ? _buildLoadingWidget()
-                              : _buildPokemonList(),
+                  child: Column(
+                    children: [
+                      Expanded(
+                        child: _hasError
+                            ? _buildErrorWidget()
+                            : RefreshIndicator(
+                                onRefresh: _refreshPokemonList,
+                                child: _filteredPokemonList.isEmpty && _isLoading
+                                    ? _buildLoadingWidget()
+                                    : _buildPokemonList(),
+                              ),
+                      ),
+                      
+                      // Pagination (only show when filters are active)
+                      if (_filteredPokemonList.isNotEmpty && !_isLoading && _filterState.hasActiveFilters)
+                        PaginationWidget(
+                          currentPage: _filterState.currentPage,
+                          totalPages: _totalPages,
+                          onPageChanged: _onPageChanged,
+                          isLoading: _isLoading,
                         ),
+                      
+                      // Info text for infinite scroll
+                      if (_pokemonList.isNotEmpty && !_filterState.hasActiveFilters)
+                        Container(
+                          padding: const EdgeInsets.all(16),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                _hasMore ? Icons.arrow_downward : Icons.check_circle,
+                                size: 16,
+                                color: Colors.grey,
+                              ),
+                              const SizedBox(width: 8),
+                              Text(
+                                _hasMore ? '아래로 스크롤하여 더 보기' : '모든 포켓몬을 불러왔습니다',
+                                style: const TextStyle(
+                                  fontSize: 12,
+                                  color: Colors.grey,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                    ],
+                  ),
                 ),
               ),
             ],
@@ -213,33 +342,111 @@ class _PokemonListScreenState extends State<PokemonListScreen> {
     );
   }
 
+  Widget _buildFilterButton() {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+      child: Row(
+        children: [
+          Expanded(
+            child: ElevatedButton.icon(
+              onPressed: () {
+                showModalBottomSheet(
+                  context: context,
+                  isScrollControlled: true,
+                  backgroundColor: Colors.transparent,
+                  builder: (context) => FilterBottomSheet(
+                    currentFilter: _filterState,
+                    onFilterChanged: _onFilterChanged,
+                  ),
+                );
+              },
+              icon: Icon(
+                _filterState.hasActiveFilters ? Icons.filter_alt : Icons.filter_alt_outlined,
+                size: 20,
+              ),
+              label: Text(_filterState.hasActiveFilters ? '필터 적용됨' : '필터'),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: _filterState.hasActiveFilters 
+                    ? const Color(0xFF6C5CE7) 
+                    : Colors.white,
+                foregroundColor: _filterState.hasActiveFilters 
+                    ? Colors.white 
+                    : const Color(0xFF6C5CE7),
+                elevation: 2,
+                padding: const EdgeInsets.symmetric(vertical: 12),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16),
+                  side: BorderSide(
+                    color: const Color(0xFF6C5CE7).withOpacity(0.3),
+                  ),
+                ),
+              ),
+            ),
+          ),
+          if (_filterState.hasActiveFilters) ...[
+            const SizedBox(width: 8),
+            IconButton(
+              onPressed: () {
+                setState(() {
+                  _filterState = _filterState.clearFilters();
+                });
+                _applyFilters();
+              },
+              icon: const Icon(Icons.clear),
+              style: IconButton.styleFrom(
+                backgroundColor: Colors.white,
+                foregroundColor: Colors.red,
+              ),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+
   Widget _buildPokemonList() {
+    // Use all pokemon when no filters, paginated when filters active
+    final displayList = _filterState.hasActiveFilters 
+        ? _getCurrentPagePokemon() 
+        : _filteredPokemonList;
+    
+    if (displayList.isEmpty) {
+      return const Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.search_off, size: 64, color: Colors.grey),
+            SizedBox(height: 16),
+            Text(
+              '필터 조건에 맞는 포켓몬이 없습니다',
+              style: TextStyle(
+                fontSize: 16,
+                color: Colors.grey,
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+    
     return ListView.builder(
+      controller: _scrollController,
       padding: const EdgeInsets.all(16),
-      itemCount: _pokemonList.length + (_isLoading ? 1 : 0),
+      itemCount: displayList.length + (_isLoading && !_filterState.hasActiveFilters ? 1 : 0),
       itemBuilder: (context, index) {
-        if (index == _pokemonList.length) {
-          // Loading indicator for pagination
-          return Container(
-            margin: const EdgeInsets.symmetric(vertical: 16),
-            child: const Center(
+        // Show loading indicator at the bottom (only for infinite scroll)
+        if (index == displayList.length && !_filterState.hasActiveFilters) {
+          return const Padding(
+            padding: EdgeInsets.symmetric(vertical: 32),
+            child: Center(
               child: CircularProgressIndicator(
                 valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF6C5CE7)),
               ),
             ),
           );
         }
-
-        final pokemon = _pokemonList[index];
         
-        // Load more when reaching the end
-        if (index == _pokemonList.length - 1 && !_isLoading) {
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            if (mounted) {
-              _loadMorePokemon();
-            }
-          });
-        }
+        final pokemon = displayList[index];
 
         return AnimatedPokemonCard(
           onTap: () {
