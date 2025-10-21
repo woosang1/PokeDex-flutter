@@ -233,8 +233,12 @@ class _PokemonListScreenState extends State<PokemonListScreen> {
         final pokemon = _pokemonList[index];
         
         // Load more when reaching the end
-        if (index == _pokemonList.length - 1) {
-          _loadMorePokemon();
+        if (index == _pokemonList.length - 1 && !_isLoading) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (mounted) {
+              _loadMorePokemon();
+            }
+          });
         }
 
         return AnimatedPokemonCard(
