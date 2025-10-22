@@ -3,11 +3,13 @@ import 'package:go_router/go_router.dart';
 import '../../features/pokemon/domain/entities/pokemon_entity.dart';
 import '../../features/pokemon/presentation/screens/pokemon_detail_screen.dart';
 import '../../features/pokemon/presentation/screens/pokemon_list_screen.dart';
+import '../../features/pokemon/presentation/screens/meta_data_screen.dart';
 
 /// App Router Configuration using go_router
 class AppRouter {
   static const String home = '/';
   static const String pokemonDetail = '/pokemon/:id';
+  static const String meta = '/meta';
 
   static final GoRouter router = GoRouter(
     initialLocation: home,
@@ -31,6 +33,14 @@ class AppRouter {
             child: PokemonDetailScreen(pokemon: pokemon),
           );
         },
+      ),
+      GoRoute(
+        path: meta,
+        name: 'meta',
+        pageBuilder: (context, state) => MaterialPage(
+          key: state.pageKey,
+          child: const MetaDataScreen(),
+        ),
       ),
     ],
     errorBuilder: (context, state) => Scaffold(
