@@ -404,6 +404,46 @@ class _MetaDataScreenState extends ConsumerState<MetaDataScreen>
   }
 
   Widget _buildTeamCompositionCard(TeamCompositionEntity team) {
+    final pokemonWidgets = List.generate(team.pokemonIds.length, (index) {
+      final pokemonId = team.pokemonIds[index];
+      final name = team.pokemonNames[index];
+      final spriteUrl =
+          'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/$pokemonId.png';
+
+      return SizedBox(
+        width: 80,
+        child: Column(
+          children: [
+            CircleAvatar(
+              radius: 26,
+              backgroundColor: const Color(0xFF6C5CE7).withOpacity(0.12),
+              child: ClipOval(
+                child: Image.network(
+                  spriteUrl,
+                  fit: BoxFit.contain,
+                  errorBuilder: (context, error, stackTrace) {
+                    return const Icon(Icons.catching_pokemon, color: Color(0xFF6C5CE7));
+                  },
+                ),
+              ),
+            ),
+            const SizedBox(height: 6),
+            Text(
+              name,
+              style: const TextStyle(
+                color: Color(0xFF6C5CE7),
+                fontWeight: FontWeight.w600,
+                fontSize: 11,
+              ),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
+      );
+    });
+
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 8),
       decoration: BoxDecoration(
@@ -463,28 +503,9 @@ class _MetaDataScreenState extends ConsumerState<MetaDataScreen>
             ),
             const SizedBox(height: 16),
             Wrap(
-              spacing: 8,
-              runSpacing: 8,
-              children: team.pokemonNames.map((name) {
-                return Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFF6C5CE7).withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(15),
-                    border: Border.all(
-                      color: const Color(0xFF6C5CE7).withOpacity(0.3),
-                    ),
-                  ),
-                  child: Text(
-                    name,
-                    style: const TextStyle(
-                      color: Color(0xFF6C5CE7),
-                      fontWeight: FontWeight.w600,
-                      fontSize: 12,
-                    ),
-                  ),
-                );
-              }).toList(),
+              spacing: 12,
+              runSpacing: 12,
+              children: pokemonWidgets,
             ),
           ],
         ),
@@ -508,6 +529,38 @@ class _MetaDataScreenState extends ConsumerState<MetaDataScreen>
   }
 
   Widget _buildItemUsageCard(ItemUsageEntity item) {
+    final itemIcon = _getItemIcon(item.itemName);
+
+    final userWidgets = item.commonUsers.map((user) {
+      return Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          CircleAvatar(
+            radius: 18,
+            backgroundColor: Colors.orange.withOpacity(0.15),
+            child: Text(
+              user.substring(0, 1).toUpperCase(),
+              style: const TextStyle(
+                fontWeight: FontWeight.bold,
+                color: Colors.deepOrange,
+              ),
+            ),
+          ),
+          const SizedBox(height: 4),
+          SizedBox(
+            width: 60,
+            child: Text(
+              user,
+              style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w600),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              textAlign: TextAlign.center,
+            ),
+          ),
+        ],
+      );
+    }).toList();
+
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 8),
       decoration: BoxDecoration(
@@ -530,12 +583,31 @@ class _MetaDataScreenState extends ConsumerState<MetaDataScreen>
           children: [
             Row(
               children: [
+                CircleAvatar(
+                  radius: 26,
+                  backgroundColor: Colors.orange.withOpacity(0.15),
+                  child: Icon(itemIcon, color: Colors.deepOrange, size: 24),
+                ),
+                const SizedBox(width: 16),
                 Expanded(
-                  child: Text(
-                    item.itemName,
-                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                          fontWeight: FontWeight.bold,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        item.itemName,
+                        style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                              fontWeight: FontWeight.bold,
+                            ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        item.description,
+                        style: TextStyle(
+                          color: Colors.grey.shade600,
+                          fontSize: 13,
                         ),
+                      ),
+                    ],
                   ),
                 ),
                 Container(
@@ -559,14 +631,6 @@ class _MetaDataScreenState extends ConsumerState<MetaDataScreen>
             ),
             const SizedBox(height: 8),
             Text(
-              item.description,
-              style: TextStyle(
-                color: Colors.grey.shade600,
-                fontSize: 14,
-              ),
-            ),
-            const SizedBox(height: 12),
-            Text(
               '주요 사용자:',
               style: TextStyle(
                 color: Colors.grey.shade700,
@@ -576,24 +640,9 @@ class _MetaDataScreenState extends ConsumerState<MetaDataScreen>
             ),
             const SizedBox(height: 4),
             Wrap(
-              spacing: 4,
-              children: item.commonUsers.map((user) {
-                return Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                  decoration: BoxDecoration(
-                    color: Colors.orange.withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Text(
-                    user,
-                    style: const TextStyle(
-                      color: Colors.orange,
-                      fontSize: 10,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                );
-              }).toList(),
+              spacing: 12,
+              runSpacing: 12,
+              children: userWidgets,
             ),
           ],
         ),
@@ -736,5 +785,17 @@ class _MetaDataScreenState extends ConsumerState<MetaDataScreen>
       default:
         return Colors.grey;
     }
+  }
+
+  IconData _getItemIcon(String itemName) {
+    final lower = itemName.toLowerCase();
+    if (lower.contains('scarf')) return Icons.wind_power;
+    if (lower.contains('orb')) return Icons.brightness_5;
+    if (lower.contains('sash')) return Icons.safety_divider;
+    if (lower.contains('leftovers')) return Icons.restaurant;
+    if (lower.contains('vest')) return Icons.checkroom;
+    if (lower.contains('band')) return Icons.fitness_center;
+    if (lower.contains('ball')) return Icons.sports_baseball;
+    return Icons.auto_awesome;
   }
 }

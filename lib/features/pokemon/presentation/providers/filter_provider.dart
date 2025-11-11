@@ -59,7 +59,7 @@ final filteredPokemonListProvider = Provider((ref) {
   final filter = ref.watch(filterProvider);
 
   // Apply filters
-  var filtered = pokemonList.where((pokemon) {
+  final filtered = pokemonList.where((pokemon) {
     // Generation filter
     if (filter.selectedGeneration != null) {
       final gen = filter.selectedGeneration!;

@@ -170,14 +170,14 @@ class _PokemonListScreenState extends ConsumerState<PokemonListScreen> {
                       );
                     },
                     borderRadius: BorderRadius.circular(20),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                    child: const Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          const Icon(Icons.trending_up, color: Colors.white, size: 16),
-                          const SizedBox(width: 4),
-                          const Text(
+                          Icon(Icons.trending_up, color: Colors.white, size: 16),
+                          SizedBox(width: 4),
+                          Text(
                             '메타데이터',
                             style: TextStyle(
                               color: Colors.white,

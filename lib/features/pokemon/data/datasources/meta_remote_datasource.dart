@@ -233,7 +233,7 @@ class MetaRemoteDataSourceImpl implements MetaRemoteDataSource {
   }
 
   List<TeamCompositionModel> _getMockTeamCompositions(String gameName) {
-    return [
+    return const [
       TeamCompositionModel(
         pokemonIds: [150, 384, 248],
         pokemonNames: ['Mewtwo', 'Rayquaza', 'Tyranitar'],
@@ -262,7 +262,7 @@ class MetaRemoteDataSourceImpl implements MetaRemoteDataSource {
   }
 
   List<ItemUsageModel> _getMockItemUsage(String gameName) {
-    return [
+    return const [
       ItemUsageModel(
         itemName: 'Choice Scarf',
         usageRate: 25.5,
