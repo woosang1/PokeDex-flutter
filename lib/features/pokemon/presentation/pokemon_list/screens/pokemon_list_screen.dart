@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../providers/filter_provider.dart';
+import '../../filter/providers/filter_provider.dart';
+import '../../filter/widgets/filter_bottom_sheet.dart';
+import '../../meta_data/screens/meta_data_screen.dart';
+import '../../pokemon_detail/screens/pokemon_detail_screen.dart';
+import '../../shared/widgets/loading_widget.dart' as shared;
 import '../providers/pokemon_list_provider.dart';
-import '../widgets/filter_bottom_sheet.dart';
-import '../widgets/loading_widget.dart' as custom;
 import '../widgets/pokemon_card_widget.dart';
-import 'pokemon_detail_screen.dart';
-import 'meta_data_screen.dart';
 
 class PokemonListScreen extends ConsumerStatefulWidget {
   const PokemonListScreen({super.key});
@@ -275,7 +275,7 @@ class _PokemonListScreenState extends ConsumerState<PokemonListScreen> {
 
   Widget _buildContent(PokemonListState state, List displayList) {
     if (state.errorMessage != null && state.pokemonList.isEmpty) {
-      return custom.ErrorWidget(
+      return shared.ErrorWidget(
         message: state.errorMessage!,
         onRetry: () {
           ref.read(pokemonListProvider.notifier).loadPokemonList();
@@ -284,7 +284,7 @@ class _PokemonListScreenState extends ConsumerState<PokemonListScreen> {
     }
 
     if (state.isLoading && state.pokemonList.isEmpty) {
-      return const custom.LoadingWidget(message: '포켓몬을 불러오는 중...');
+      return const shared.LoadingWidget(message: '포켓몬을 불러오는 중...');
     }
 
     if (displayList.isEmpty) {

@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../domain/entities/filter_entity.dart';
-import 'pokemon_list_provider.dart';
+import '../../../domain/entities/filter_entity.dart';
+import '../../pokemon_list/providers/pokemon_list_provider.dart';
 
 /// Filter State Notifier
 class FilterNotifier extends StateNotifier<FilterEntity> {

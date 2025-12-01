@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../../features/pokemon/domain/entities/pokemon_entity.dart';
-import '../../features/pokemon/presentation/screens/pokemon_detail_screen.dart';
-import '../../features/pokemon/presentation/screens/pokemon_list_screen.dart';
-import '../../features/pokemon/presentation/screens/meta_data_screen.dart';
+import '../../features/pokemon/presentation/pokemon_detail/screens/pokemon_detail_screen.dart';
+import '../../features/pokemon/presentation/pokemon_list/screens/pokemon_list_screen.dart';
+import '../../features/pokemon/presentation/meta_data/screens/meta_data_screen.dart';
 
 /// App Router Configuration using go_router
 class AppRouter {

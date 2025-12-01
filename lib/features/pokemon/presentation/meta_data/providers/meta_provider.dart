@@ -1,7 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../domain/entities/meta_entity.dart';
-import '../../domain/usecases/meta_usecases.dart';
-import 'pokemon_providers.dart';
+import '../../../domain/entities/meta_entity.dart';
+import '../../../domain/usecases/meta_usecases.dart';
+import '../../shared/providers/pokemon_providers.dart';
 
 /// 메타데이터 상태
 class MetaState {
@@ -183,3 +183,4 @@ final metaProvider = StateNotifierProvider<MetaNotifier, MetaState>((ref) {
     getItemUsageRates: getItemUsageRates,
   );
 });
+

@@ -1,15 +1,15 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../../../core/network/dio_client.dart';
-import '../../data/datasources/pokemon_remote_datasource.dart';
-import '../../data/datasources/meta_remote_datasource.dart';
-import '../../data/repositories/pokemon_repository_impl.dart';
-import '../../data/repositories/meta_repository_impl.dart';
-import '../../domain/repositories/pokemon_repository.dart';
-import '../../domain/repositories/meta_repository.dart';
-import '../../domain/usecases/get_pokemon_by_id.dart';
-import '../../domain/usecases/get_pokemon_list.dart';
-import '../../domain/usecases/get_pokemon_list_with_details.dart';
-import '../../domain/usecases/meta_usecases.dart';
+import '../../../../../core/network/dio_client.dart';
+import '../../../data/datasources/pokemon_remote_datasource.dart';
+import '../../../data/datasources/meta_remote_datasource.dart';
+import '../../../data/repositories/pokemon_repository_impl.dart';
+import '../../../data/repositories/meta_repository_impl.dart';
+import '../../../domain/repositories/pokemon_repository.dart';
+import '../../../domain/repositories/meta_repository.dart';
+import '../../../domain/usecases/get_pokemon_by_id.dart';
+import '../../../domain/usecases/get_pokemon_list.dart';
+import '../../../domain/usecases/get_pokemon_list_with_details.dart';
+import '../../../domain/usecases/meta_usecases.dart';
 
 // ============================================================================
 // Core Providers

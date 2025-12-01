@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../../../../core/constants/app_constants.dart';
-import '../../domain/entities/pokemon_entity.dart';
+import '../../../../../core/constants/app_constants.dart';
+import '../../../domain/entities/pokemon_entity.dart';
 
 /// Pokemon Card Widget
 class PokemonCardWidget extends StatelessWidget {

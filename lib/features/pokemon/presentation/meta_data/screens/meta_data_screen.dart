@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../domain/entities/meta_entity.dart';
+import '../../../domain/entities/meta_entity.dart';
 import '../providers/meta_provider.dart';
 
 class MetaDataScreen extends ConsumerStatefulWidget {
@@ -799,3 +799,4 @@ class _MetaDataScreenState extends ConsumerState<MetaDataScreen>
     return Icons.auto_awesome;
   }
 }
+
