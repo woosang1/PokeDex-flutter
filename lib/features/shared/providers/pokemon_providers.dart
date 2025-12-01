@@ -1,5 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../../../../core/network/dio_client.dart';
+import '../../../core/network/dio_client.dart';
 import '../../../data/datasources/pokemon_remote_datasource.dart';
 import '../../../data/datasources/meta_remote_datasource.dart';
 import '../../../data/repositories/pokemon_repository_impl.dart';

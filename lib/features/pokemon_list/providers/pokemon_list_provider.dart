@@ -1,5 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../../../../core/constants/app_constants.dart';
+import '../../../core/constants/app_constants.dart';
 import '../../../domain/entities/pokemon_entity.dart';
 import '../../../domain/usecases/get_pokemon_list_with_details.dart';
 import '../../shared/providers/pokemon_providers.dart';
